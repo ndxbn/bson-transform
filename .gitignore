@@ -1,0 +1,6 @@
+## TypeScript
+.tsbuildinfo
+## Project dir
+lib/
+coverage/
+node_modules/
