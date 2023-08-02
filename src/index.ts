@@ -1,1 +1,1 @@
-export * from "./BsonStream";
+export * from "./BsonTransform";

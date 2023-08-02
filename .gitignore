@@ -1,6 +1,6 @@
 ## TypeScript
 .tsbuildinfo
 ## Project dir
-lib/
+dist/
 coverage/
 node_modules/

@@ -1,7 +1,7 @@
 {
   "extends": "@ndxbn/preset-typescript",
   "compilerOptions": {
-    "outDir": "./lib"
+    "outDir": "./dist"
   },
   "include": ["src/index.ts"]
 }

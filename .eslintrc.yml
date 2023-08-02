@@ -4,4 +4,4 @@ extends:
 parser: "@typescript-eslint/parser"
 plugins:
   - "@typescript-eslint"
-root: truenpox
+root: true
