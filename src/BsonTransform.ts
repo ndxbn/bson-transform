@@ -22,7 +22,8 @@ export class BsonTransform extends Transform {
   private buffer: Buffer = new Buffer(0);
   private documentLength: number | null = null;
 
-  public constructor(options: BsonStreamOptions = {}) {
+  public constructor(options: BsonStreamOptions = {objectMode: true}) {
+    options.objectMode = options.objectMode ?? true;
     super(options);
 
     // Default is MongoDB Limits and Thresholds
@@ -99,10 +100,10 @@ export class BsonTransform extends Transform {
     // since the complete document is in the buffer, try to read nad parse it as BSON.
     try {
       const raw = this.buffer.subarray(0, this.documentLength);
-      const parsed = bson.deserialize(raw);
+      const parsedOrRaw = this.writableObjectMode ? bson.deserialize(raw) : raw;
 
       // if successfully complete to parse
-      this.push(JSON.stringify(parsed));
+      this.push(parsedOrRaw);
       this.buffer = this.buffer.subarray(this.documentLength); // shift buffer
       this.documentLength = null; // to parse next doc
     } catch (err) {
