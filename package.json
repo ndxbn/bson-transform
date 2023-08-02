@@ -1,6 +1,6 @@
 {
   "name": "bson-transform",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Transform BSON to JavaScript Native Object. Provide node:stream/Transform and node:stream/web/TransformStream",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
