@@ -45,7 +45,6 @@ export class BsonTransform extends Transform {
    * @override
    * @internal
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public _transform(chunk: any, _: BufferEncoding, callback: TransformCallback) {
     const newLength = this.buffer.length + chunk.length;
 
