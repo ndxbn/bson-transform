@@ -1,6 +1,5 @@
 .idea/
 .editorconfig
-.eslintrc.yml
 
 src/**/__tests__
 *.spec.ts

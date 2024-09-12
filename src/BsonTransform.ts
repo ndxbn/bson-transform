@@ -1,4 +1,4 @@
-import bson from "bson";
+import * as bson from "bson";
 import {Transform, TransformCallback, TransformOptions} from "node:stream";
 
 type BsonStreamOptions = TransformOptions & {
@@ -45,7 +45,6 @@ export class BsonTransform extends Transform {
    * @override
    * @internal
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public _transform(chunk: any, _: BufferEncoding, callback: TransformCallback) {
     const newLength = this.buffer.length + chunk.length;
 
@@ -58,7 +57,7 @@ export class BsonTransform extends Transform {
    * @private
    */
   private reset() {
-    this.buffer = new Buffer(0);
+    this.buffer = Buffer.alloc(0);
     this.documentLength = null;
   }
 
@@ -80,14 +79,12 @@ export class BsonTransform extends Transform {
       }
 
       const documentLength = this.buffer.readInt32LE(0);
-
       if(documentLength > this.maxDocumentLength) {
         // discard buffer
         this.reset();
         callback(new Error('document exceeds configured maximum length'));
         return;
       }
-
       this.documentLength = documentLength;
     }
 
