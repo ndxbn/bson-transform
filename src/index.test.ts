@@ -3,7 +3,7 @@ import * as path from "node:path";
 
 import * as bson from "bson";
 
-import {BsonTransform} from "../";
+import {BsonTransform} from "./";
 
 describe("BsonStream Usage", () => {
   test("read BSON file", (done) => {
