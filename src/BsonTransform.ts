@@ -1,5 +1,6 @@
 import * as bson from "bson";
-import {Transform, TransformCallback, TransformOptions} from "node:stream";
+import {Transform,} from "node:stream";
+import type {TransformCallback, TransformOptions} from "node:stream";
 
 type BsonStreamOptions = TransformOptions & {
   /**
@@ -11,7 +12,9 @@ type BsonStreamOptions = TransformOptions & {
 };
 
 /**
+ * Node.js `stream.transform` BSON Buffer to JavaScript Object.
  *
+ * If you don't use Node.js, use BsonTransformerFactory to
  */
 export class BsonTransform extends Transform {
 
@@ -19,7 +22,7 @@ export class BsonTransform extends Transform {
   private readonly maxDocumentLength;
 
   // current statements
-  private buffer: Buffer = new Buffer(0);
+  private buffer: Buffer;
   private documentLength: number | null = null;
 
   public constructor(options: BsonStreamOptions = {objectMode: true}) {
@@ -34,6 +37,7 @@ export class BsonTransform extends Transform {
     }
     this.maxDocumentLength = maxDocumentLength;
 
+    this.buffer = Buffer.alloc(0); // Compiler
     this.reset();
   }
 
@@ -79,7 +83,7 @@ export class BsonTransform extends Transform {
       }
 
       const documentLength = this.buffer.readInt32LE(0);
-      if(documentLength > this.maxDocumentLength) {
+      if (documentLength > this.maxDocumentLength) {
         // discard buffer
         this.reset();
         callback(new Error('document exceeds configured maximum length'));
