@@ -1,4 +1,5 @@
 import * as bson from "bson";
+import type {Document} from "bson";
 
 type BsonStreamOptions = {
   /**
@@ -9,7 +10,7 @@ type BsonStreamOptions = {
   maxDocumentLength?: number
 };
 
-export class BsonDeserializeStream<I = Buffer, O> implements Transformer<I,O> {
+export class BsonDeserializeStream<I> implements Transformer<I,Document> {
   // options
   private readonly maxDocumentLength;
 
@@ -17,7 +18,7 @@ export class BsonDeserializeStream<I = Buffer, O> implements Transformer<I,O> {
   private buffer: Buffer;
   private documentLength: number | null = null;
 
-  public constructor(options: BsonStreamOptions) {
+  public constructor(options: BsonStreamOptions = {}) {
     // Default is MongoDB Limits and Thresholds
     // https://www.mongodb.com/docs/manual/reference/limits/#bson-documents
     const maxDocumentLength = options.maxDocumentLength ?? 1024 * 1024 * 16;
@@ -38,7 +39,7 @@ export class BsonDeserializeStream<I = Buffer, O> implements Transformer<I,O> {
    * @override
    * @internal
    */
-  public transform(chunk: I, controller: TransformStreamDefaultController<O>) {
+  public transform(chunk, controller) {
     const newLength = this.buffer.length + chunk.length;
 
     this.buffer = Buffer.concat([this.buffer, chunk], newLength);
@@ -57,7 +58,7 @@ export class BsonDeserializeStream<I = Buffer, O> implements Transformer<I,O> {
   /**
    * read docLength bytes and parse to JavaScript Object
    */
-  private parseDocs(controller: TransformStreamDefaultController) {
+  private parseDocs(controller: TransformStreamDefaultController<O>) {
     // BSON spec: https://bsonspec.org/spec.html
 
     // first, make sure the expected document length
@@ -72,7 +73,7 @@ export class BsonDeserializeStream<I = Buffer, O> implements Transformer<I,O> {
       if (documentLength > this.maxDocumentLength) {
         // discard buffer
         this.reset();
-        controller(new Error('document exceeds configured maximum length'));
+        controller.error(new Error('document exceeds configured maximum length'));
         return;
       }
       this.documentLength = documentLength;
@@ -87,9 +88,9 @@ export class BsonDeserializeStream<I = Buffer, O> implements Transformer<I,O> {
     try {
       const raw = this.buffer.subarray(0, this.documentLength);
       const parsed = bson.deserialize(raw);
-
       // if successfully complete to parse
-      this.push(parsed);
+      controller.enqueue(parsed);
+
       this.buffer = this.buffer.subarray(this.documentLength); // shift buffer
       this.documentLength = null; // to parse next doc
     } catch (err) {
@@ -97,17 +98,13 @@ export class BsonDeserializeStream<I = Buffer, O> implements Transformer<I,O> {
       // Almost err is BSONError type.
       // If err is not BSONError or string, it's unexpected bug.
       const error = err instanceof Error ? err : new Error(err as string);
-      controller(error);
+      controller.error(error);
       return;
     }
 
     // if there might be any document and parsable
     if (this.buffer.length > 4) {
       this.parseDocs(controller);
-    } else {
-      controller();
     }
-
   }
-
 }
