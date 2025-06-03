@@ -40,6 +40,6 @@
     "typescript": "5.8.3"
   },
   "dependencies": {
-    "bson": "6.10.3"
+    "bson": "6.10.4"
   }
 }
