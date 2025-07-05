@@ -25,7 +25,7 @@ describe("BsonStream Usage", () => {
       expect(() => {
         // chunk should be deserializable
         bson.deserialize(chunk);
-      }).not.toThrowError();
+      }).not.toThrow();
     }).on("end", () => {
       done();
     });
