@@ -33,7 +33,7 @@
     "@ndxbn/preset-typescript": "0.0.12",
     "@types/jest": "30.0.0",
     "@types/node": "24.0.15",
-    "jest": "30.0.4",
+    "jest": "30.0.5",
     "prettier": "3.6.2",
     "ts-jest": "29.4.0",
     "ts-node": "10.9.2",
