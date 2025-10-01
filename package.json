@@ -32,12 +32,12 @@
     "@ndxbn/preset-jest": "0.2.4",
     "@ndxbn/preset-typescript": "0.0.12",
     "@types/jest": "30.0.0",
-    "@types/node": "24.6.0",
+    "@types/node": "24.6.1",
     "jest": "30.2.0",
     "prettier": "3.6.2",
     "ts-jest": "29.4.4",
     "ts-node": "10.9.2",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   },
   "dependencies": {
     "bson": "6.10.4"
